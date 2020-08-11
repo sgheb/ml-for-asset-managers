@@ -171,20 +171,3 @@ def optPort(cov, mu=None):
     w = np.dot(inv, mu)
     w /= np.dot(ones.T, w)
     return w
-
-
-if __name__ == "__main__":
-    alpha, nCols, nFact, q = 0.995, 1000, 100, 10
-    cov = np.cov(np.random.normal(size=(nCols * q, nCols)), rowvar=0)
-    cov = alpha * cov + (1 - alpha) * getRndCov(nCols, nFact)
-    corr0 = cov2corr(cov)
-    eVal0, eVec0 = getPCA(corr0)
-    eMax0, var0 = findMaxEval(np.diag(eVal0), q, bWidth=0.01)
-    nFacts0 = eVal0.shape[0] - np.diag(eVal0)[::-1].searchsorted(eMax0)
-
-    corr1 = denoisedCorr(eVal0, eVec0, nFacts0)
-    eVal1, eVec1 = getPCA(corr1)
-
-    nBlocks, bSize, bCorr = 10, 50, 0.5
-    np.random.seed(0)
-    mu0, cov0 = formTrueMatrix(nBlocks, bSize, bCorr)
